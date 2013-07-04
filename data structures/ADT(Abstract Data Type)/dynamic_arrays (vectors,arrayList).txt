@@ -1,0 +1,22 @@
+Vector class/dynamic Array:
+
+A dynamic array ADT solves shortcomings of regular array type by reimplementing the array concept in the form of an ADT.
+
+Shortcomings of an array type:
+
+- Arrays are allocated with a particular size that doesn’t change after the array is allocated.
+
+- Even though arrays have a fixed size, C++ does not in fact make that size available to the programmer. In most applications, you need to keep track of the effective size of the array.
+
+- It is impossible to insert new elements into an array or to delete elements without writing a fair amount of code to shift the existing elements to new index positions.
+
+- Many languages, including both C and C++, make no effort to ensure that the elements you select are actually present in the array. It would be far better if arrays in C++ (as they do in Java) implemented bounds checking, which means that every array access checks to see whether the index is valid.
+
+Note: You can use the Vector class in place of arrays in any application, usually with surprisingly few changes in the source code and only a minor reduction in efficiency. In fact, once you have the Vector class, it’s unlikely that you will have much occasion to use arrays at all, unless you actually have to implement classes like Vector, which, not surprisingly, uses arrays in its underlying structure. As a client of the Vector class, however, you are not interested in that underlying structure and can leave the array mechanics to the programmers who implement the abstract data type.
+
+Client of a Vector class:
+As a client of the Vector class, you are concerned with a different set of issues and need to answer the following questions:
+1. How is it possible to specify the type of object contained in a Vector?
+2. How does one create an object that is an instance of the Vector class?
+3. What methods are available in the Vector class to implement its abstract behavior?
+

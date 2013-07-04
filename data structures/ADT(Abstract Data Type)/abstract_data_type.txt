@@ -4,18 +4,32 @@ Abstract data types are purely theoretical entities, used (among other things) t
 
 - Some common ADTs, which have proved useful in a great variety of applications, are:
 
-Container
+Container or Collection  --  it is a Super Abstract Data type, since each subsequent ADT is in fact containing other objects as part of a unified collection. Such classes are called either container classes or collection classes.
+
 Deque
+
 List
+
 Map
+
 Multimap
+
 Multiset
+
 Priority queue
+
 Queue
+
 Set
+
 Stack
+
 String
+
 Tree
+
 Graph
+
+Heap
 
 Each of these ADTs may be defined in many ways and variants, not necessarily equivalent. For example, a stack ADT may or may not have a count operation that tells how many items have been pushed and not yet popped. This choice makes a difference not only for its clients but also for the implementation.
