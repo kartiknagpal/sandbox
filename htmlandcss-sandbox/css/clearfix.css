@@ -1,0 +1,55 @@
+/*CSS Clearfix Demystified
+
+Introduction
+
+So you write HTML and CSS. You have a bunch of div’s and you float them all left. You place these floating divs 
+inside a containing div and you expect the container to “wrap” or enclose the floating divs within it. 
+IT DOESN’T! WHY?!?!?
+
+You need to clear the floats first, dummy. See this example to see what we are talking about. Now, we will 
+discuss some techniques to solve this…
+
+Oldschool clear:both
+
+The simplest and most common way to solve this is by adding a BR element with style=”clear:both” inside the 
+container div after your floated divs:
+
+<br style="clear:both" />
+And here is a demo of this oldschool technique.
+
+OK cool so it’s working, why change something that ain’t broken? Well, some fundamentalists argue that adding 
+extra HTML markup for layout/positioning is bad and it has a weird smell to it. And I agree to some degree.
+
+Introducing Clearfix:
+
+Some clever people then came up with the clearfix CSS technique. This technique allows you to contain flaoting divs 
+without extra structural markup. Basically, this allows you have the same end result as the clear:both example above,
+ but without having to add any additional HTML. Awesome! It was done by using some fancy CSS:
+*/
+.clearfix:after {
+    visibility: hidden;
+	display: block;
+	content: "";
+	clear: both;
+	height: 0;
+}
+* html .group             { zoom: 1; } /* IE6 */
+*:first-child+html .group { zoom: 1; } /* IE7 */
+/*Of course if you drop IE 6 or 7 support, remove the associated lines.
+
+Micro Clearfix:
+
+Then the other day I was browsing the HTML Boilerplate code and noticed some CSS with a link to A new micro 
+clearfix hack. Basically this technique uses the following CSS:
+
+Update August 2012: I'd say for the most part these days (if you only need IE 8 and up) this is fine:*/
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/*Conclusion
+
+Stop using additional markup to clear your floats, and start using the micro clearfix today! */

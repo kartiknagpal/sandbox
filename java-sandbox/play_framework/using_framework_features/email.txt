@@ -1,0 +1,93 @@
+Basics:
+
+  Email use SMTP.
+  config mail server(use Gmail) on local machine for dev mode yourself:
+    # Mail configuration
+	# ~~~~~
+
+	# Default is to use a mock Mailer
+	# mail.smtp=mock (outputs emails to terminal)
+
+	# Or, specify mail host configuration (using gmail)
+	mail.smtp.host=smtp.gmail.com
+	mail.smtp.user=your-gmail-user
+	mail.smtp.pass=your-gmail-pass
+	mail.smtp.channel=ssl
+	# mail.smtp.port=					  (no need to specify port, gmail uses default ssl port)
+
+
+Creating emails in play:
+
+  1). Use play utility function Mail.send(@args: SimpleEmail) - use for simple notifications email
+      SimpleEmail email = new SimpleEmail();
+      email.setForm("eplay@eplay.com");
+      email.addTo("you@email.com");
+      email.setSubject("A simple email");
+      email.setMsg("The Message Body");
+      Mail.send(email);
+
+ 2).  a). Build the controller which extends play.mvc.Mailer, that will create email:
+				- use for more complex emails
+
+			Our email controller will exist in a new package called notifiers, and needs to extend the Play class 
+			play.mvc.Mailer.
+			Create a new file call app/notifiers/Emails.java, and add the following code.
+
+			package notifiers;
+			import play.mvc.*;
+			import models.*;
+
+			public class Emails extends Mailer {
+
+				public static void welcome(User user) {
+
+					setSubject("Welcome %s", user.firstname);
+					addRecipient(user.email);
+					setFrom("ePlay <eplay@localhost>");
+					send(user);
+
+					}
+			}
+
+			Note: Rather than calling render() like we would if we were displaying an HTML view, we call the send()
+				  method and pass the User object into the email view.
+				  When the send() method was called within the welcome action, Play searches for either
+				  welcome.txt or welcome.html. If the txt file is found, the email is sent as plain text. 
+				  If an html file is found, the email is sent as an html email. If both are found, play will send 
+				  the email with both plain text and html and let the email client determine which type of email 
+				  it would prefer to display. In our example though we have just created an HTML email.
+
+	  b). Build the email view:
+			
+			Although the action that executed the view was from a Mailer, rather than a Controller, the view
+			code still needs to be located in the views directory, and takes the same pattern as when attaching
+			views from a controller (i.e. a subdirectory of app/views, with the name of the Mailer (class) as the
+			directory containing all the views for that Mailer). So, we need to create a new file called
+			app/views/Emails/welcome.html and add the following code:
+
+			<html>
+			<body>
+				<h4>Welcome <b>${user.firstname}</b>, </h4>
+				<p>
+					Thank you for signing up to ePlay. You have signed up with the
+					following details, please ensure they are correct.
+				</p>
+				<p>
+					Firstname: ${user.firstname} <br />
+					Lastname: ${user.lastname} <br />
+					Username: ${user.username} <br />
+				</p>
+				<p>
+					To sign in and start creating auctions,
+					<a href="@@{Application.index()}">click here</a>
+				</p>
+			</body>
+			</html>
+
+			Note: The HTML code is built in exactly the same way as our other views, except it will be sent as an 
+			email rather than displayed in a browser. We have added a link back to the application, 
+			and therefore we have made use of the @@ notation to ensure that the link is absolute, so the full URL 
+			is outputted and not a relative URL.
+
+			If we needed to add any further emails to our application we would do so by adding more actions to
+			the Emails class that we have created and creating the relevant views in the app/views/Email directory.			  

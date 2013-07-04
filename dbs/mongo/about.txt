@@ -1,0 +1,5 @@
+Some key features:
+
+	-  No need to create db, 'use db' automatically creates the db
+	-  No need to create collection 
+	-  DB -> Collection -> Document (contain json)

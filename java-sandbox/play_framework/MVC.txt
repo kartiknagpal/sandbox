@@ -1,0 +1,9 @@
+Coupling of Controller's action and View:
+
+  By default, each view is attached to a individual controller. To achieve this binding, Play enforces app/views/ControllerName/ActionName.html file name and directory structure.
+  Eg., Default view when creating a new app is located at app/views/Application/index.html only because, default controller name is Application.java
+
+  The name of the view also needs to corresponds to a action contained within the controller.
+  Eg., index() method in Application.java controller corresponds to views/Application/index.html view
+
+  Note: It is possible to circumvent the coupling of the controller's action and the view by specifying the exact location of your view when render() method is invoked. This is introduces unnecessary complexity, so not a best practice.

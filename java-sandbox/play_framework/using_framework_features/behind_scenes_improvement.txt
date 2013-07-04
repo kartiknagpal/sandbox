@@ -1,0 +1,8 @@
+There are a few more behind the scenes feature that could be quite important to the development 
+of your applications. These features are:
+
+	• Application caching to improve application performance
+	• Boostrapping and Scheduling for performing functionality that is not user auctioned
+	• Play server Production Mode
+
+	

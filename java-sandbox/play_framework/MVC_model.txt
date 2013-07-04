@@ -1,0 +1,17 @@
+Introduction to JPA:
+
+	The model layer has a central position in a Play application (and in fact in all well-designed applications). 
+	It is the domain-specific representation of the information on which the application operates. 
+	As we want to create a blog engine, the model layer will certainly contain classes like User, Post and Comment.
+
+	Because most model objects need to survive between application restarts, we have to save them in a persistent 
+	datastore. A common choice is to use a relational database. But because Java is an object oriented language, 
+	we will use an object-relational mapper to help reduce the impedance mismatch.
+
+	The Java Persistence API (JPA) is a Java specification that defines a standard API for object-relational mapping. 
+	As an implementation of JPA, Play uses the well-known Hibernate framework. 
+	One advantage of using JPA over the standard Hibernate API is that all the ‘mapping’ is declared directly in the 
+	Java objects.
+
+	If you have used Hibernate or JPA before you will be surprised by the simplicity added by Play. No need to 
+	configure anything; JPA just works out of the box with Play.

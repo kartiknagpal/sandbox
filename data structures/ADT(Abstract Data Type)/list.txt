@@ -1,0 +1,24 @@
+Introduction:
+
+A list or sequence is an abstract data type that implements an ordered collection of values, where the same value may occur more than once. An instance of a list is a computer representation of the mathematical concept of a finite sequence. Each instance of a value in the list is usually called an item, entry, or element of the list; if the same value occurs multiple times, each occurrence is considered a distinct item.
+
+The name list is also used for several concrete data structures that can be used to implement abstract lists, especially linked lists.
+
+The so-called static list structures allow only inspection and enumeration of the values. A mutable or dynamic list may allow items to be inserted, replaced, or deleted during the list's existence.
+
+Operations:
+
+Implementation of the list data structure may provide some of the following operations:
+a constructor for creating an empty list;
+an operation for testing whether or not a list is empty;
+an operation for prepending an entity to a list
+an operation for appending an entity to a list
+an operation for determining the first component (or the "head") of a list
+an operation for referring to the list consisting of all the components of a list except for its first (this is called the "tail" of the list.)
+
+Implementations:
+
+Lists are typically implemented either as linked lists (either singly or doubly linked) or as arrays, usually variable length or dynamic arrays.
+The standard way of implementing lists, originating with the programming language Lisp, is to have each element of the list contain both its value and a pointer indicating the location of the next element in the list. This results in either a linked list or a tree, depending on whether the list has nested sublists. 
+Lists can be manipulated using iteration or recursion. The former is often preferred in imperative programming languages, while the latter is the norm in functional languages.
+Lists can be implemented as self-balancing binary search trees holding index-value pairs, providing equal-time access to any element (e.g. all residing in the fringe, and internal nodes storing the right-most child's index, used to guide the search), taking the time logarithmic in the list's size, but as long as it doesn't change much will provide the illusion of random access and enable swap, prefix and append operations in logarithmic time as well.

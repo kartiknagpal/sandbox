@@ -1,0 +1,129 @@
+Controllers:
+
+	The controller is one of the core elements of a Play application as part of the MVC model. All
+	controllers for an application are found in the app/controllers directory of your play application.
+
+	Open the yabe/app/controllers/Application.java source file:
+
+	package controllers;
+	 
+	import play.mvc.*;
+	 
+	public class Application extends Controller {
+	 
+		public static void index() {
+			render();
+		}
+	 
+	}
+
+	Notice that controller (class)es extend the play.mvc.Controller (class). This (class) provides many useful 
+	methods for controllers, like the render() method we use in the index action.
+
+	The index action is defined as a public static void method. This is how action methods are defined. 
+	You can see that action methods are static, because the controller (class)es are never instantiated. 
+	They are marked public to authorize the framework to call them in response to a URL. They always return void. 
+
+	The default index action is simple: it calls the render() method which tells Play to render a template. 
+	Using a template is the most common way (but not the only one) to generate the HTTP response.
+
+	Templates are simple text files that live in the /app/views directory. Because we didn’t specify a template, 
+	the default one for this action will be used: Application/index.html
+
+	Purpose:
+
+		The purpose of the controller is to join together the domain model and the events being requested
+		from the HTTP request. As discussed in the MVC model section, a controller does not perform the
+		business logic. That is carried out by the model. Instead the controller receives the event, reads the
+		parameters that are sent with the event and performs the necessary actions on the model. Once
+		completed, the controller will render the correct view to display the results to the calling application
+		(usually the browser).
+		In terms of other web frameworks, a controller can be thought of as similar to the standard HTTP
+		Servlet, or in Struts it would be equivalent of the Action object. Play however goes many steps
+		further to make building web applications faster and easier and the Controller is one of the first
+		places you will see why.
+
+	Creating a controller:
+
+		The application controller is a Java (class) that extends play.mvc.Controller, containing a number of
+		methods that represents actions. Each action is a way for the controller to respond to events from
+		the view and perform the necessary actions.
+		NOTE: An action in the controller must be public and static.
+		Key themes to understand at this point are: ‐
+			- All Controller (class)es must be kept in the directory app/controllers, and therefore the
+			package structure should be controllers.
+			- The Java (class) should be a sub‐(class) of play.mvc.Controller.
+			- All actions that can be accessed due to the routes configuration must be set up as public and
+			  static. If they are not, the HTTP request will not be able to be routed correctly to the action
+		      by the Play framework.
+
+	Parameters:
+
+		For a web application to function as an application, it requires data to be passed back and forth
+		between the user (interface) and the application controller. For each event or action, associated data
+		is required to fulfill the request.
+
+		In HTTP parameters can be passed in to an application in a number of different ways. These are:
+			- As part of the query string, such as /article?id=123
+			- As part of the request body (for example, if a form is sent using POST)
+			- AS part of the URI, such as /article/123
+
+		Using a traditional Servlet approach, you would have the get the parameters from the HttpRequest
+		object, which is easy enough for the first two examples; however for the third example you would
+		specifically have to deconstruct the URI to extract the parameter data.
+		Fortunately, Play does all of that for you! Because the route file allowed us to specify parameters in
+		the URI, play build all the data from the URI, query string and request body and adds it to a Map
+		object called params.
+		There are then two ways that you can work with the data from the params Map variable.
+
+			Parameter map:
+
+				The first way to use the data is to work directly with the params variable. The variable is 
+				defined in the Controller super‐(class), so you will automatically have access to it. 
+				To access the parameter, you simply need to call the get method on the params Map object, 
+				and pass in the name of the parameter you wish to work with. This is very similar to the way the 
+				HTTPRequest object works in a Servlet environment.
+
+				String id = params.get(“id”);
+
+				However, Play as always does a little bit more. You can request that Play automatically converts 
+				the data into the correct object type. All data that is passed via HTTP is text, so is usually 
+				dealt with as Strings. In our example of an article ID being passed in, this is a numeric. 
+				So, we can request that Play converts the parameter automatically to a Long by adding the (class) 
+				type to the get method.
+
+				Long id = params.get(“id”, Long.class);
+
+				That’s pretty easy right? Well, not enough for Play. There is an even easier way to do it. 
+				Why bother messing with the params object at all?
+
+		 	Action method parameters:
+
+				If you add a parameter to the method signature of your action, as long as it is the same name as
+				the HTTP parameter, Play will automatically populate the data into the Java parameter.
+				Let’s show you an example to see how easy it is. Imagine that the browser has requested the page
+				for /article?id=123, and the route file routes through to the show() method. To pick up the id, we
+				would simply need the parameters called id in the method signature.
+
+				public static void show(Long id) {
+
+					render(Article.findById(id));
+				}
+
+				Here, the HTTP value of the parameter id would automatically be cast to a Long and populated into
+				the id Java parameter. You can’t get much easier than that can you?
+				Well, actually yes. Play does not only cast parameters from Strings to simply data types like the
+				numeric values we have been working with, it can do some extremely intelligent mappings between
+				HTTP and Java.
+
+	Advanced HTTP to Java binding
+		Simple types
+
+		All the native and common Java types are automatically bound:
+
+		int, long, boolean, char, byte, float, double, Integer, Long, Boolean, Char, String, Byte, Float, Double.
+
+		Note that if the parameter is missing in the HTTP Request, or if automatic conversion fails, 
+		Object types will be set to null and native types will be set to their default values.
+
+	

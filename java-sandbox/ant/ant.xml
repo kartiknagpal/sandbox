@@ -1,0 +1,64 @@
+<!-- Ant
+
+Ant is the most commonly used "make" facility for Java programs. After editing source programs, it's necessary to recompile. Ant checks the last change date on .class and .java files and recompiles source files where the .class date is older than the corresponding .java file. 
+
+Ant also supports many additional tasks, for example, running javadoc to produce documentation, running tests, building jar files, ... The action of ant is determined by a build.xml file. A generic build.xml file is given 
+below that might be appropriate for student programs.
+Obtaining and installing Ant
+
+Ant is free from the Apache Software Foundation (ant.apache.org). 
+
+To install it on Windows unzip it into a directory (eg, C:\ant) and set the following three environment variables 
+(JAVA_HOME should be set to where your JDK directory is). Installation instructions can be found at ant/docs/manual/index.html in the ant directory and online.
+
+Environment variables:
+
+The environment variables ANT_HOME, JAVA_HOME, and PATH must be set (eg, Settings - Control Panel - System - Advanced - Environment Variables - System Variables).
+   ANT_HOME=c:\ant
+   JAVA_HOME=c:\jdk1.4.2_04
+   To PATH add %ANT_HOME%\bin
+
+Usage:
+
+Ant can be used from many IDEs, but I typically use it from a DOS/Command window.
+Set up ant as above.
+Copy build.xml (see below) into your project directory.
+Open a DOS/Command window and move (cd) to the directory containing your source files.
+Type ant to compile your source files. The source="1.4" option is already specified so assertions are enabled at compile time.
+I use a text editor and flip back and forth between editing and the DOS window to make changes, fix bugs, etc.
+Run the program with "java -ea YourProg" ("-ea" enables run-time assertions).
+
+Simple build.xml file:
+
+For simple development where the source and object files are in the same directory and there's no explicit package 
+(typical student project organization), the following build.xml file can be used. This works correctly if all top-level classes are in separate files. The following ant commands can be used.ant	Compiles source files 
+(defaults to build).
+ant build	Compiles source files. Same as above.
+ant docs	Creates javadoc documentation in a docs directory. It creates the docs directory if necessary. 
+docs/index.html is the root of the documentation.
+ant clean	Deletes all .class files and the docs directory. This must be done whenever a class has been renamed or removed, before final builds, and just every so often to help detect "code rot".
+ -->
+<?xml version="1.0"?>
+<project name="generic" default="build" basedir=".">
+    <!-- ================================================= build -->
+    <target name="build" description="Compile source files">
+        <javac srcdir="." source="1.4" debug="true"/>
+    </target>
+    
+    <!-- ================================================== docs -->
+    <target name="docs" depends="build" 
+                        description="Generate javadoc documentation.">
+        <javadoc destdir="docs" private="true" source="1.4">
+            <fileset dir="." includes="*.java"/>
+        </javadoc>
+    </target>
+    
+    <!-- ================================================== clean -->
+    <target name="clean" description="Delete class files and docs dir.">
+        <delete>
+            <fileset dir="." includes="*.class"/>
+        </delete>
+        <delete dir="docs" />
+    </target>
+</project>
+ Copyleft 2004 Fred Swartz MIT License, Last update: 2004-05-06

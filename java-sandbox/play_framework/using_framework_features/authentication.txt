@@ -1,0 +1,95 @@
+The first part of our authentication mechanism is to create our User Model object.
+Then,  
+
+
+User Model:
+
+	There are some key pieces of information that we require, such as username and password, but we will also collect
+	firstname and lastname, plus an email address.
+	Create a new file called app/models/User.java and add the following code:
+
+	package models;
+	import play.data.validation.*;
+	import play.db.jpa.Model;
+	import play.libs.Codec;
+	import javax.persistence.*;
+
+	@Entity
+	public class User extends Model {
+	@Required
+	@MinSize(6)
+	public String username;
+	@Required
+	@Email
+	public String email;
+	@Required
+	@Password
+	@Transient
+	public String password;
+	public String passwordHash;
+	@Required
+	public String firstname;
+	@Required
+	public String lastname;
+
+	public void setPassword(String password) {
+		this.password = password;
+		this.passwordHash = Codec.hexMD5(password);
+	  }
+
+	public static boolean isValidLogin(String username, String password) {
+		// return TRUE if there is a single matching username/passwordHash
+		return (count("username=? AND PasswordHash=?", username,
+		Codec.hexMD5(password)) == 1);
+	  }
+	}
+
+	Note: We have created a User class which extends Model (so that we have access to the Play JPA utility
+		  methods) and is annotated with the @Entity to specify that we want this object to be saved to the
+		  database.
+
+
+	Authenticate Controller:
+
+		Unlike all of the actions that we have created so far, the authentication mechanism of the
+		application is separate enough to warrant creating a separate controller. While we could keep all of
+		the authentication actions in the main Application controller, it is good practice to ensure that the
+		controllers are specific to the area of the application that they are working with, for maximum reuser
+		and cleanliness of code. If you study the controller that we will create next, you will notice that
+		there is nothing within this code that is specific to an Auction application. This code could easily be
+		re‐used in your other applications. Be aware of this re‐use when building your applications and
+		always aim for maximum re‐use where you can.
+		Create a new file called app/controllers/Authenticate.java, and add the following code.
+
+		package controllers;
+		import play.data.validation.Valid;
+		import play.mvc.Controller;
+		import models.*;
+
+		public class Authenticate extends Controller {
+
+		private static void doLoginLogic(String username) {
+			session.put("user", username);
+		}
+
+		public static void register() {
+			render();
+		}
+
+		public static void doRegister(@Valid User user) {
+
+			// if there are errors, redisplay the registration form,
+			// otherwise save the user
+			if (!user.validateAndSave()) {
+			params.flash();
+			validation.keep();
+			register();
+			}
+			// if no errors, log the user in and redirect to the index page
+			doLoginLogic(user.username);
+			Application.index();
+		  }
+		}
+		The controller is very much as you would expect a Play controller to look. First of all we have an
+		action register( ) which simply renders the View. This action will be used to display the
+		registration page.

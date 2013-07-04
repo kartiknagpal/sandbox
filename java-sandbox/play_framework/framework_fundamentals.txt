@@ -1,0 +1,152 @@
+When you create standalone Java applications you generally use a single entry point defined by a method such as:
+
+public static void main(String[] args) {
+  ... 
+}
+
+A Play application has several entry points, one for each URL. We call these methods action methods. Action methods are defined in special classes that we call controllers.
+
+Intro to Model:
+
+	A common misconception of the model is that it is ONLY the data representation.
+	Therefore, the model is the data representation and domain logic that the application operates on.
+	Most web applications will have a database that sits behind the data model to add persistency to the application.
+	Play makes the persistency exceptionally easy using JPA.
+
+
+Intro to View:
+
+	The view is responsible for rendering the model in a suitable form. In Web applications, this is
+	typically HTML, but this could just as likely be XML, JSON or images. It is also possible (and often
+	advantageous) to have multiple views over the same data model. If you consider computing of old,
+	an application may have been built with a command line version and a GUI version. A more current
+	example would be having a view for the desktop computer, another for smartphones and a final
+	XML representations for an open API.
+
+Intro to Controller:
+
+	The controller responds to events (typically user actions from the view) and processes them, which
+	may invoke changes in the model. The typical lifecycle of a controller is that it listens for event (by
+	listening for HTTP requests to be received from the browser), it then reads data sent as part of the
+	request (parameters sent with a POST or GET in the HTTP request) and then applies the changes to
+	the data model.
+
+Play MVC Lifecycle:
+
+	1 – An HTTP request is received from the browser
+	2 – The controller receives the request and updates the Model accordingly
+	3 – The controller requests that the view is rendered
+	4 – The output from the rendered view is returned as a HTTP response to the browser
+
+HTTP Routing:
+
+	HTTP routing is configured using a file named routes, which can be found in the conf directory of your application
+
+	Purpose:
+		The purpose of the HTTP routing file is to translate the HTTP requests that are received (from the
+		browser or otherwise) into events that are then executed by the controller. Based on the type of
+		request that is received (the HTTP method and URI), the router will invoke the specified controller to
+		perform the desired method.
+	
+	Syntax:
+
+		The route file contains 3 main elements. The first item is the HTTP method (such as GET or POST),
+		the second element is the URI (such as /register) and the final element is the controller and method
+		name (such as Application.index).
+		A final element may also be optionally included to indicate static arguments and/or specifying the content type. It is also possible to add comments to a route file using the hash symbol.
+
+		Method:
+
+			Play allows all the HTTP methods supported by the HTTP specification. If you wish your route to
+			allow any method, an asterisk can be used as a wildcard. The valid values that can be used for the
+			first part of a route are: ‐
+			- GET
+			- POST
+			- PUT
+			- DELETE
+			- HEAD
+			- *
+			If you wish to have more than one method available for a particular URI, then simply add a second
+			entry to the route file. It is also possible to have a GET and a POST to the same URI perform a
+			different action (in true REST fashion, a GET may be used to read and a DELETE may be used to
+			delete a resource, but both called via the same URI).
+
+		Route URI:
+
+			If the HTTP request URI matches an entry in the route file for the specified method, the corresponding controller will be invoked.
+			As you can see from the example route file, there are a number of ways a match can be made. The
+			first way is to make an absolute exact match. 
+			For example: ‐
+			GET 			/signup 							Application.signup
+
+			For this match to be made, an absolute exact match would be needed from the calling application. If
+			an exact match was found, the signup method of the Application controller would be invoked.
+
+			GET 			/signup/{uuid} 						Application.confirmRegistration
+
+			For this second match to be made, a GET request would need to be made to a URL containing
+			/signup/ and then followed by any other value. This value would then be mapped dynamically to
+			uuid and passed through the confirmRegistration method as a parameter.
+
+			GET 			/forums/{<[0-9]+>forumId} 			Forums.show
+
+			This third example shows how a regular expression can be used to ensure that the data being passed
+			in as a dynamic parameter can be restricted to valid data only. In this case, the regular expression is
+			enforcing numerics only, and mapped through to the show method on the Forum controller as the
+			forumId parameter.
+
+			It is also possible to have multiple dynamic elements as part of the URI. Consider a photo application
+			which organises photographs into albums. A URI that may be used to display a photograph from a
+			particular album may be something similar to the following.
+
+			GET 			/album/{albumId}/photo/{photoId} 	Photo.show
+
+
+		Controller:
+
+			The final part of the required elements of the route syntax is the controller. The first two parts
+			determine a match to the incoming HTTP request and this final part indentifies the destination. The
+			typical format for the destination is ControllerName.MethodName.
+			If the controller Java file is located in a sub package, this needs to be included in the format for
+			invoking the controller, by pre‐pending the package structure to the controller name, in the format
+			packagename.ControllerName.MethodName.
+			NOTE: It is required that controllers are public, static methods for them to be invoked by the Router.
+
+		Content Types:
+
+			By default, play will set the response format to be the same as the request by checking the HTTP
+			headers. However, it is possible to define the format of the response (the content type) by specifying
+			it as a parameter in the route file.
+
+			GET 			/recent/rss 						News.recentStories(format:’rss’)
+
+	Route Priority:
+
+		As the routes configuration file can contain many different entries, and it could be possible that
+		multiple entries in the routes file could match a HTTP request, there needs to be an order of priority
+		placed on each route in the file. To keep management of the file simple, the priority order is from
+		top to bottom. When a request is received, it will read the route file one line at a time checking for a
+		match. If a match is found, it will use the first one it comes across and invoke the relevant controller.
+		It is therefore wise to keep the very specific match expressions near the top and the general ones
+		nearer the bottom, to prevent the specific expressions from never being reached.
+		For this reason, it is important to ensure that the catch‐all routes are kept at the very end of the
+		routes file.
+
+	Static Content:
+
+		As with most web serving technology, play allows static content to be served in a different way to
+		dynamic content. This makes processing the request much faster, and it also make maintenance of
+		the application much simpler if all static content is kept in the same place.
+		Static content is referred to code that is not generated (such as Java and HTML files) and when
+		requested from the browser, is simply returned without processing the data. Examples of static data
+		would be javascript, css and images.
+		Static content by default is located in the public directory of your application. For convenience and
+		good practice, the public directory is further split down into images, javascript and stylsheets.
+
+		GET 				/public 			staticDir:public
+
+		This route specifies that all requests that are received starting with /public should be assumed to be
+		static content (because of the special staticDir identifier) and the location of the content within the
+		application is the public folder (specified by the identifier after the colon).
+
+		

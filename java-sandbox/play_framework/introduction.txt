@@ -1,0 +1,22 @@
+Introduction to Play Framework
+  - Ease web dev while sticking to java
+  - targets restful architectures
+  -	When you typed play run helloworld in your command line window, it kicked off a python script
+	(which is why it starts so fast) that started the Play server. The play server that comes with the 1.1
+	version of Play is Netty. The server quickly starts and begins to wait for new requests to be received.
+  - When you type http://localhost:9000 into your web browser, this sends the request through to the
+	Netty web server, which sends the request onto the core play system. Here play creates an internal
+	Request and Response object that is populated from the details of the HTTP Request captured by
+	Netty.
+  - Play also compiles the source code of your application automatically by using the Eclipse compiler.
+    This is how Play allows you to develop your code without having to redeploy when you have made
+	your code changes. Do not go looking for the class files, there is no need. Whilst Play uses the class
+	files behind the scenes, you never need to know about it and can simply assume that everything is
+	done using the Java files.
+  - Play then looks up the action that needs to be called, based on the URL, by pattern matching against
+	the routes file.
+  - Once the action is found from the routes configuration file, the relevant Java method is called. In our
+	case, the action method is pretty straightforward, and then finishes off by calling the render method.
+  - When the Java method has completed and the render method is called, the relevant view (in this
+	case an HTML file) is called. Play converts the view into a Groovy script and then compiles it (into
+	HTML by default), ready to be returned as part of the response via the Netty server.

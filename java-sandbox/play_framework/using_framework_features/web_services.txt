@@ -1,0 +1,116 @@
+Basics:
+  
+  What is a Web Services:
+
+	In a nutshell, a Web Service is a program or function (called a service) that is requested via HTTP and
+	usually executed on a remote server. Put simply, Web Services are succinct, specific functions
+	offered by publishers that can be integrated into applications. Some very common examples are
+	stock prices, currency conversion services and weather services.
+
+	Some key concepts are:
+	
+	• Using the play.libs.WS class, we are able to easily connect to, and consume both traditional
+	amd Web API type Web Services.
+
+	• By using the renderJSON( ) method, we can easily publish API calls for our application with
+	minimal coding
+
+  Typically Web Services fall into one of two types:
+
+	• Traditional Web Services ‐ using SOAP (Simple Object Access Protocol) XML messages to
+	define the function required and the parameters. The service will respond with a SOAP
+	response containing the response.
+
+	• RESTful Web Services ‐ typically requested using standard HTTP methods, headers and
+	parameters and a response is given using XML or JSON. These methods are common place in
+	Web APIs such as Twitter, YouTube and Flickr.
+
+	Consuming Web Services:
+
+	  Consuming a Web Service in Play is centered around the WS (class). Behind the scenes this (class) builds
+	  HTTP Requests using the apache HTTPClient object (or the Async Http Client from Ning, in Play 1.1).
+	  Play abstracts the complications of building the request and offers a few simple methods to achieve
+	  the necessary results.
+	  Eg.,
+	  create a (class) called Conversion that we will store as part of the Model. This will
+	  perform the necessary WebService calls to retrieve the currency data from a remote service.
+	  Create a new file called app/models/Conversion.java and add the following code:
+
+	    package models;
+		import org.w3c.dom.Document;
+		import play.cache.Cache;
+		import play.libs.WS;
+
+		public class Conversion {
+			public static double getExchangeRate(String from, String to) {
+				String key = from.toUpperCase() + to.toUpperCase();
+				Double rate = (Double)Cache.get(key);
+
+				if (rate == null) {
+
+					rate = refreshExchangeRate(from, to, key);
+				}
+				return rate;
+			}
+
+			private static Double refreshExchangeRate(String from, String to, String key) {
+
+				Document doc = WS.url("http://www.webservicex.net/CurrencyConvertor.asmx/" +
+				"ConversionRate?FromCurrency="+from+"&ToCurrency="+to).get().getXml();
+				Double rate = Double.parseDouble(
+				doc.getElementsByTagName("double").item(0).getTextContent());
+				Cache.set(key, rate, "1h");
+				return rate;
+			}
+
+			private static Double refreshExchangeRateSOAP(String from, String to, String key){
+				String wsReq =
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><soap12:Envelope "+
+				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "+
+				"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "+
+				"xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">"+
+				"<soap12:Body><ConversionRate xmlns=\"http://www.webserviceX.NET/\">" +
+				"<FromCurrency>"+from+"</FromCurrency>" +
+				"<ToCurrency>"+to+"</ToCurrency>"+
+				"</ConversionRate></soap12:Body></soap12:Envelope>";
+				Document doc = WS.url("http://www.webservicex.net/CurrencyConvertor.asmx")
+				.setHeader("content-type",
+				"application/soap+xml").body(wsReq).post().getXml();
+				Double rate = Double.parseDouble(
+				doc.getElementsByTagName("ConversionRateResult").item(0).getTextContent());
+				Cache.set(key, rate, "1h");
+				return rate;
+			  }
+			}
+
+		Note: This code that there are three methods, but only two are used. The WebService
+		provider offers multiple ways to call the webservice, one using a SOAP request and one using a
+		RESTful HTTP GET request. To show how both of these methods protocols are used, they
+		have both been included in the code.
+
+		The XML returned from both of these example are very simple and did not need any heavy
+		processing. However, if we were working with bigger responses or a list of nodes (such as results as a
+		response of a search) we could use the play.libs.XPath (class) to perform useful XPath navigation of
+		the XML document.
+
+		Publishing RESTful Web Services:
+
+		As already mentioned, RESTful web services are common in Web APIs such as Twitter, YouTube and
+		Flickr. These APIs add a lot of value to these types of social web sites as they allow the content of the
+		website to be expanded beyond the reach of the current audience. Fortunately, to add these
+		external interfaces are very simple. The two typical methods are to use XML or JSON.
+
+		We could create an action in our controller to respond to a web service request.
+
+		public static void recentlyAddedJSON() {
+
+			List<Photo> photos = Photo.find("order by id DESC").fetch(50);;
+			renderJSON(photos);
+		}
+
+		This code simply retrieves a list of Photo objects and then renders them in JSON format. The
+		renderJSON method uses the Google GSON library to convert the List object to a JSON response, and
+		that is it! Our first Web API method.
+		If you decide you would rather publish SOAP or XML Web Services, this can be done in the normal
+		way using the standard render( ) method, and creating an XML view to output the content, similar
+		to the RSS example.

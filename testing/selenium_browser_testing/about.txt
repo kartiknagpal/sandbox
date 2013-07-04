@@ -1,0 +1,49 @@
+Summary:
+ 
+	The entire Selenium Tool Suite is comprised of four components:
+
+	Selenium IDE(learning purpose), a Firefox add-on that you can only use in creating relatively simple test cases and test suites.
+	Selenium Remote Control, also known as Selenium 1, which is the first Selenium tool that allowed users to use programming languages in creating complex tests.
+	WebDriver(recommended), the newer breakthrough that allows your test scripts to communicate directly to the browser, thereby controlling it from the OS level.
+	Selenium Gridis also a tool that is used with Selenium RC to execute parallel tests across different browsers and operating systems.
+	Selenium RC and WebDriver was merged to form Selenium 2. 
+
+What is Selenium? (Selenium 2)
+
+	Selenium is a free (open source) automated testing suite for web applications across different browsers and platforms.
+	Selenium is not just a single tool but a suite of softwares, each catering to different testing needs of an organization. It has four components:
+
+		Selenium Integrated Development Environment (IDE)
+		Selenium Remote Control (RC)
+		WebDriver
+		Selenium Grid
+
+	Note: Selenium RC and WebDriver are merged in Selenium 2
+
+	Briefing:
+
+		-  Selenium IDE:
+
+			Selenium IDE, a Firefox extension that can automate the browser through a record-and-playback feature. It further increase the speed in creating test cases.
+
+		-  Selenium Remote Control (Selenium RC):
+
+			Unfortunately; testers using Selenium Core had to install the whole application under test and the web server on their own local computers because of the restrictions imposed by the same origin policy. So another ThoughtWork’s engineer, Paul Hammant, decided to create a server that will act as an HTTP proxy to “trick” the browser into believing that Selenium Core and the web application being tested come from the same domain. This system became known as the Selenium Remote Control or Selenium 1.
+
+		-  WebDriver:
+
+			When browsers and web applications were becoming more powerful and more restrictive with JavaScript programs like Selenium Core.It was the first cross-platform testing framework that could control the browser from the OS level.
+
+
+		-  Selenium Grid:
+
+			Selenium Grid was developed by Patrick Lightbody to address the need of minimizing test execution times as much as possible. He initially called the system “Hosted QA.” It was capable of capturing browser screenshots during significant stages, and also of sending out Selenium commands to different machines simultaneously.
+
+
+		-  Birth of Selenium 2
+
+			In 2008, the whole Selenium Team decided to merge WebDriver and Selenium RC to form a more powerful tool  called Selenium 2, with WebDriver being the core. Currently, Selenium RC is still being developed but only in maintenance mode. Most of the Selenium Project’s efforts are now focused on Selenium 2.
+
+		-  Brief Introduction Selenium IDE:
+
+			Selenium Integrated Development Environment (IDE) is the simplest framework in the Selenium suite and is the easiest one to learn. It is a Firefox plugin that you can install as easily as you can with other plugins. However, because of its simplicity, Selenium IDE should only be used as a prototyping tool. If you want to create more advanced test cases, you will need to use either Selenium RC or WebDriver.

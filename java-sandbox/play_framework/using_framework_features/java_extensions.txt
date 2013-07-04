@@ -1,0 +1,99 @@
+Basics:
+
+	Java Extensions offer a way to create re‐usable and potentially complex presentation logic without
+	having to build it as a script within your View or adding presentation logic to your Model. Play injects
+	these utility methods into our objects at runtime, making them available within our Views to use.
+	Custom extensions are saved in a directory called app/ext and the (class) must extend
+	play.templates.JavaExtensions.
+
+	Java extensions are a very cool feature of Play that significantly helps when building views. The
+	concept itself is pretty simple, but it is incredibly powerful. Play comes with a set of extensions as
+	part of the framework, but also recognises that this powerful feature is something we will want to
+	extend to create our own extensions.
+
+	So, before we go into building some extensions, here is a quick overview of how they are built.
+		• A method is written inside a (class) that extends play.templates.JavaExtensions that takes
+		an object (could be the base Object (class) or a specific object, like String, Collection, Date or
+		Number) as the first parameter and then zero or more further parameters.
+		• The method is then attached to the object specified in the first parameter, at run time, so
+		can be available as a utility method on that object at run time to help display.
+	For example, creating a method called chop(String s, int length) could be used to chop
+	characters off the end of a string. This method will be available for us in all of our String objects in
+	our views by simply calling ${myString.chop(3)}, where myString is the name of the string to be
+	chopped.
+	
+	But why is this so useful? 
+	
+	Well, put simply, we have already discussed that we should make every
+	effort to keep logic out of our view. We should also try to keep our views as simple as possible.
+
+	Complex code will result in difficult to maintain systems. We don’t want to put display logic into our
+	model, as the model should only be concerned with the data and logic, the view should be
+	concerned about how to display that data.
+
+	So, we are in a position where we want our display logic to be encapsulated within the view only,
+	but we don’t want to make our view overly complicated. That is where extensions solve our
+	problem. We can create display utilities outside of the view code, but separated from the model.
+	
+
+Custom Extensions:
+
+	Custom Extensions would be beneficial, is that to achieve the same affect in our view would require at least 
+	a few lines of code to achieve our aim and is likely to be reused throughout the application, so would result 
+	in unnecessary duplication of the code.
+	To create our extensions, we need to create a new ((class)) that extends play.templates.JavaExtensions. 
+	We will do this by creating a new ((class)) in a new directory called ext, so create a new file 
+	app/ext/AuctionExtensions.java, and add the following code.
+
+	package ext;
+	import play.templates.JavaExtensions;
+	import java.util.Date;
+
+	public class AuctionExtensions extends JavaExtensions {
+
+		public static String dotChop(String s, int maxLength) {
+
+			if (s.length() > maxLength) {
+				return s.substring(0, maxLength) + "...";
+			} else {
+				return s;
+			  }
+
+		}
+		public static String until(Date date) {
+
+		Date now = new Date();
+		if (now.after(date)) {
+
+			return "";
+		}
+		long delta = (date.getTime() - now.getTime()) / 1000;
+		long seconds = delta % 60;
+		long minutes = (delta / 60) % 60;
+		// we should have 2 options, if less than 1 hour,
+		// then show minutes and seconds
+		if (delta < 60 * 60) {
+
+			return minutes + "m " + seconds + "s";
+		}
+		// otherwise show days, hours, minutes
+		else {
+		long hours = (delta / (60 * 60)) % 24;
+		long days = delta / (24 * 60 * 60);
+		return days + "d " + hours + "h " + minutes + "m";
+		}
+	  }
+	}
+
+	Usage: ${item.description.dotChop(50)}
+	We can see that we are able to simply call the dotChop( ) method on any String object within our
+	view. As our Extension contained two parameters (the String and the maxlength integer), we needed
+	to pass through the maxLength value as part of the method call.
+
+	Note: To perform either pieces of logic within our views, and duplicated across our views, would be 
+	incredibly messy, so this solution is a very neat way to improve the power of the templating engine.
+
+	It is likely that these extensions will be incredibly reusable components that you will want to take
+	from project to project. So although the code snippets we have used do not have a great deal of
+	comments within, I would recommend that you comment sufficiently so that the code is well
+	understood when ported from one application to another.

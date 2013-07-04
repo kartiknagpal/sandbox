@@ -1,0 +1,54 @@
+File Uploads:
+
+	The first part of the process for uploading files is to add a standard HTML file upload form input, 
+	add enctype="multipart/form-data" attr to form element.
+
+	<p class="field">
+		<label>Photo</label><input type="file" id="photo" name="item.photo"/>
+	</p>
+
+	Note: This code set the form encoding type enctype to multipart/form-data to allow file data to be
+	uploaded with the form, and we also add the input type file as one of the form elements. The name
+	of the form element is set as item.photo, so when we update our model we will need to create a
+	photo attribute to link this element to.
+
+	Add (public Blob photo;) to model for form.
+	Note: Blob is part of the package play.db.jpa, so make sure you add this to the imports at the top
+	of the class.
+
+
+	Viewing the Images:
+
+		To view the images, we actually have to do this in two parts. Unlike the uploading of images, which
+		Play handled everything for us, the web browser does not allow images to be embedded within the
+		HTML code. Well, this is not strictly true as some web browsers do allow it, but not all. Instead we
+		have to use an image HTML tag that retrieves the image from the server in a separate request. This
+		means that we have to write an action that will download just the image part of an item when
+		required to do so by an image tag.
+		So, let’s start with the controller and create our showImage action. Open the
+		app/controllers/Application.java file. Add the following action code.
+
+		public static void showImage(Long id) {
+			AuctionItem item = AuctionItem.findById(id);
+			renderBinary(item.photo.get());
+		}
+
+		The final line of code gets the File object from the photo using the get( ) method and calls the
+		renderBinary( ) method. RenderBinary( ) is similar to the render( ) method that we have used
+		many times already, except it take a File as it’s parameter and renders the binary data within the file
+		rather than loading a Groovy template.
+		Our controller is now set up to return the image data that we have uploaded, so we just need to call
+		the action from our views to display the image. Let’s start with the show view. Open the
+		app/views/Application/show.html file and add the highlighted code.
+
+		#{if item.photo.exists()}
+			<img src="@{Application.showImage(item.id)}" alt="${item.title} image" />
+		#{/if}
+
+
+		Note: Before we move on though, is should be noted that one of the downsides of this approach is that
+		because we are calling the show( ) method and then the showImage( ) method, both of which load the
+		AuctionItem from the database, we now have two database reads to display a single item. This is not
+		ideal, but is enforced upon us by the nature of HTML. It will suffice for now but we will come back to
+		this later when we talk about caching, as it offers us an alternative that will add some performance
+		improvements, and means we only need to load from the database once.

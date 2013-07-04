@@ -1,0 +1,3 @@
+Building Test Cases
+
+There are three primary methods for developing test cases. Frequently, a test developer will require all three techniques.
