@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+<title>welcome to beans</title>
+</head>
+<body>
+<h2>Welcome to the Beans Page!</h2>
+<p>Current price:</p><hr/>
+<ul>
+  <strong>Bean 1 - $2.99</strong>
+  <strong>Bean 2 - $3.99</strong>
+  <strong>Bean 3 - $4.99</strong>
+  <strong>Bean 4 - $5.99</strong>
+</ul>
+</body>
+</html>

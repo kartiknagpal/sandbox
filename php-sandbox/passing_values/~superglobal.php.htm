@@ -1,0 +1,60 @@
+
+
+Warning: session_start(): Cannot send session cookie - headers already sent in C:\xampp\htdocs\sandbox\passing_values\superglobal.php on line 2
+
+Call Stack:
+    0.0024     325232   1. {main}() C:\xampp\htdocs\sandbox\passing_values\superglobal.php:0
+    0.0024     325264   2. session_start() C:\xampp\htdocs\sandbox\passing_values\superglobal.php:2
+
+
+Warning: session_start(): Cannot send session cache limiter - headers already sent in C:\xampp\htdocs\sandbox\passing_values\superglobal.php on line 2
+
+Call Stack:
+    0.0024     325232   1. {main}() C:\xampp\htdocs\sandbox\passing_values\superglobal.php:0
+    0.0024     325264   2. session_start() C:\xampp\htdocs\sandbox\passing_values\superglobal.php:2
+
+<!doctype html>
+<html>
+<head>
+<title>SuperGlobals</title>
+</head>
+<body>
+<h2>Sessions: </h2><hr><br>
+<li>
+	<h3>Form submits itself using post method, which generates session array</h3>
+</li>
+
+<form action="" method="POST">
+     	<label for="name">Enter name: </label>
+     	<input type="text" name="name">
+     	<input type="submit" value="submit" name="submitMe">
+</form>
+<br><h2>GET Method: </h2><hr><br>
+<li>
+	<h3>Value is passed using url encoding which populates get array</h3>
+</li>
+    
+Array
+(
+    [var] => 1
+)
+<a href='test_script.php?var=1'>Go to test script</a><li>
+	<h3>Form is posted using get method</h3>
+</li>
+<form name="log" action="test_script.php" method="get">
+	<label for="name">Enter name: </label>
+	<input type="text" name="name" id="name">
+	<input type="submit" name="submit" value="Go to test script">
+</form>
+<br><h2>POST method:</h2><hr><br>
+<li>
+	<h3>Form submitted using post method.</h3>
+</li>
+     <!--<form action="" method="POST">-->
+     <form action="test_script.php" method="post">
+     	<label for="name">Enter name: </label>
+     	<input type="text" name="name">
+     	<input type="submit" value="submit" name="submitMe">
+     </form>
+</body>
+</html>
